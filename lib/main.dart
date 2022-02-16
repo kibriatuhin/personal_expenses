@@ -69,6 +69,12 @@ class _MainAppState extends State<MainApp> {
           .isAfter(DateTime.now().subtract(Duration(days: 7)));
     }).toList();
   }
+  //remove transactions
+  void _deleteTransactions( String id){
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id==id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +96,7 @@ class _MainAppState extends State<MainApp> {
             children: [
               //NewTransactions(addNewTransaction: _addNewTransactions,),
               Cart(recentTransactions: _recentTransactions),
-              TransactionsList(userTransactions: _userTransactions)
+              TransactionsList(userTransactions: _userTransactions,deleteTransaction: _deleteTransactions)
             ],
           ),
         ),
