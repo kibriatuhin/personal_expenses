@@ -86,8 +86,8 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandScop =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final isLandScop = mediaQuery.orientation == Orientation.landscape;
 
     final appbar = AppBar(
       // backgroundColor: Color(0xff0868de),
@@ -131,9 +131,9 @@ class _MainAppState extends State<MainApp> {
                 ),
               if (!isLandScop)
                 Container(
-                  height: (MediaQuery.of(context).size.height -
+                  height: (mediaQuery.size.height -
                           appbar.preferredSize.height -
-                          MediaQuery.of(context).padding.top) *
+                          mediaQuery.padding.top) *
                       0.3,
                   child: Cart(recentTransactions: _recentTransactions),
                 ),
@@ -141,9 +141,9 @@ class _MainAppState extends State<MainApp> {
               if (isLandScop)
                 _showChart
                     ? Container(
-                        height: (MediaQuery.of(context).size.height -
+                        height: (mediaQuery.size.height -
                                 appbar.preferredSize.height -
-                                MediaQuery.of(context).padding.top) *
+                                mediaQuery.padding.top) *
                             0.7,
                         child: Cart(recentTransactions: _recentTransactions),
                       )
