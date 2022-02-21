@@ -23,12 +23,16 @@ class Cart extends StatelessWidget {
           }
         }
 
-        return {'day': DateFormat.E().format(weakDay).substring(0,1), 'amount': totalSum};
+        return {
+          'day': DateFormat.E().format(weakDay).substring(0, 1),
+          'amount': totalSum
+        };
       },
     ).reversed.toList();
   }
+
   // max spending
-  double get maxSpending{
+  double get maxSpending {
     return groupedTransactionsValue.fold(0.0, (sum, item) {
       return sum + item['amount'];
     });
@@ -37,32 +41,38 @@ class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         Card(
-           
-           elevation: 6,
-           child: Padding(
-             padding: EdgeInsets.all(10),
-             child: Text(
-               'Total spending of weak: $maxSpending'
-             ),
-           ),
-         ),
+        /*Container(
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          width: double.infinity,
+          child: Card(
+            elevation: 6,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Text('Total spending of weak: $maxSpending'),
+            ),
+          ),
+        ),*/
         Card(
           elevation: 6,
-          margin: EdgeInsets.all(20),
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: groupedTransactionsValue.map((e) {
-                return ChartBar(label: e['day'], spendingAmount: e['amount'], spendingOfTotal: maxSpending==0.0 ? 0.0: (e['amount']as double )/ maxSpending);
+                return ChartBar(
+                    label: e['day'],
+                    spendingAmount: e['amount'],
+                    spendingOfTotal: maxSpending == 0.0
+                        ? 0.0
+                        : (e['amount'] as double) / maxSpending);
               }).toList(),
             ),
           ),
         )
       ],
     );
-    
   }
 }

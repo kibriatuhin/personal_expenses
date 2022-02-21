@@ -69,34 +69,45 @@ class _MainAppState extends State<MainApp> {
           .isAfter(DateTime.now().subtract(Duration(days: 7)));
     }).toList();
   }
+
   //remove transactions
-  void _deleteTransactions( String id){
+  void _deleteTransactions(String id) {
     setState(() {
-      _userTransactions.removeWhere((tx) => tx.id==id);
+      _userTransactions.removeWhere((tx) => tx.id == id);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final appbar = AppBar(
+      // backgroundColor: Color(0xff0868de),
+      title: appbarTitle,
+      actions: [
+        IconButton(
+          onPressed: () => _showModalBottomSheet(),
+          icon: AddIcon(
+            iconData: Icons.add,
+          ),
+        )
+      ],
+    );
+
     return Scaffold(
-        appBar: AppBar(
-          // backgroundColor: Color(0xff0868de),
-          title: appbarTitle,
-          actions: [
-            IconButton(
-              onPressed: () => _showModalBottomSheet(),
-              icon: AddIcon(
-                iconData: Icons.add,
-              ),
-            )
-          ],
-        ),
+        appBar: appbar,
         body: SingleChildScrollView(
           child: Column(
             children: [
               //NewTransactions(addNewTransaction: _addNewTransactions,),
-              Cart(recentTransactions: _recentTransactions),
-              TransactionsList(userTransactions: _userTransactions,deleteTransaction: _deleteTransactions)
+              Container(
+                height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
+                child: Cart(recentTransactions: _recentTransactions),
+              ),
+              Container(
+                height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.7,
+                child: TransactionsList(
+                    userTransactions: _userTransactions,
+                    deleteTransaction: _deleteTransactions),
+              )
             ],
           ),
         ),
