@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:personal_expenses/custom_widgets/add_icons.dart';
 import 'package:personal_expenses/models/transactions.dart';
 import 'package:personal_expenses/utilities/constant.dart';
@@ -7,6 +8,11 @@ import 'package:personal_expenses/widgets/new_transaction.dart';
 import 'package:personal_expenses/widgets/transactions_list.dart';
 
 void main() {
+  /* WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);*/
   runApp(MyApp());
 }
 
@@ -36,6 +42,7 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   DateTime? _pickedDate;
+  bool _showChart = false;
   List<Transactions> _userTransactions = [
     // Transactions(id: "id1", title: "Shirt", amount: 5.5, dateTime: DateTime.now())
   ];
@@ -79,6 +86,9 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandScop =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appbar = AppBar(
       // backgroundColor: Color(0xff0868de),
       title: appbarTitle,
@@ -91,23 +101,53 @@ class _MainAppState extends State<MainApp> {
         )
       ],
     );
-
+    //transaction list
+    final txListWidgets = Container(
+      height: (MediaQuery.of(context).size.height -
+              appbar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
+      child: TransactionsList(
+          userTransactions: _userTransactions,
+          deleteTransaction: _deleteTransactions),
+    );
     return Scaffold(
         appBar: appbar,
         body: SingleChildScrollView(
           child: Column(
             children: [
-              //NewTransactions(addNewTransaction: _addNewTransactions,),
-              Container(
-                height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
-                child: Cart(recentTransactions: _recentTransactions),
-              ),
-              Container(
-                height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.7,
-                child: TransactionsList(
-                    userTransactions: _userTransactions,
-                    deleteTransaction: _deleteTransactions),
-              )
+              if (isLandScop)
+                Row(
+                  children: [
+                    Text("Show Chart"),
+                    Switch(
+                        value: _showChart,
+                        onChanged: (value) {
+                          setState(() {
+                            _showChart = value;
+                          });
+                        })
+                  ],
+                ),
+              if (!isLandScop)
+                Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appbar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.3,
+                  child: Cart(recentTransactions: _recentTransactions),
+                ),
+              if (!isLandScop) txListWidgets,
+              if (isLandScop)
+                _showChart
+                    ? Container(
+                        height: (MediaQuery.of(context).size.height -
+                                appbar.preferredSize.height -
+                                MediaQuery.of(context).padding.top) *
+                            0.7,
+                        child: Cart(recentTransactions: _recentTransactions),
+                      )
+                    : txListWidgets
             ],
           ),
         ),

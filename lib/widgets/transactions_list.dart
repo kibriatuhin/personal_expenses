@@ -17,7 +17,8 @@ class TransactionsList extends StatelessWidget {
      // height: 300,
       //height: MediaQuery.of(context).size.height * 0.6,
       child: userTransactions.isEmpty
-          ? Column(
+          ? LayoutBuilder(builder: (ctx , constrains){
+            return Column(
               children: [
                 Container(
                   margin: EdgeInsets.only(top: 10),
@@ -33,14 +34,15 @@ class TransactionsList extends StatelessWidget {
                   height: 20,
                 ),
                 Container(
-                  height: 200,
+                  height: constrains.maxHeight * 0.6,
                   child: Image.asset(
                     "assets/image/waiting.png",
                     fit: BoxFit.cover,
                   ),
                 )
               ],
-            )
+            );
+      })
           : ListView.builder(
               itemCount: userTransactions.length,
               shrinkWrap: true,
