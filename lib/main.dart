@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
       debugShowCheckedModeBanner: false,
-      home: MainApp(),
+      home: const MainApp(),
     );
   }
 }
@@ -73,7 +73,7 @@ class _MainAppState extends State<MainApp> {
   List<Transactions> get _recentTransactions {
     return _userTransactions.where((element) {
       return element.dateTime
-          .isAfter(DateTime.now().subtract(Duration(days: 7)));
+          .isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).toList();
   }
 
@@ -84,8 +84,52 @@ class _MainAppState extends State<MainApp> {
     });
   }
 
+  //LandScap mode
+  List<Widget> _buildLandScapeContent(
+      MediaQueryData mediaQuery, AppBar appbar, Widget txListWidgets) {
+    return [
+      Row(
+        children: [
+          const Text("Show Chart"),
+          Switch(
+              value: _showChart,
+              onChanged: (value) {
+                setState(() {
+                  _showChart = value;
+                });
+              })
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appbar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Cart(recentTransactions: _recentTransactions),
+            )
+          : txListWidgets
+    ];
+  }
+
+  //portrait mode
+  List<Widget> _buildPortaitContent(
+      MediaQueryData mediaQuery, AppBar appbar, Widget txListWidgets) {
+    return [
+      Container(
+        height: (mediaQuery.size.height -
+                appbar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.3,
+        child: Cart(recentTransactions: _recentTransactions),
+      ),
+      txListWidgets
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    //print('build() in main class');
     final mediaQuery = MediaQuery.of(context);
     final isLandScop = mediaQuery.orientation == Orientation.landscape;
 
@@ -95,7 +139,7 @@ class _MainAppState extends State<MainApp> {
       actions: [
         IconButton(
           onPressed: () => _showModalBottomSheet(),
-          icon: AddIcon(
+          icon: const AddIcon(
             iconData: Icons.add,
           ),
         )
@@ -111,49 +155,22 @@ class _MainAppState extends State<MainApp> {
           userTransactions: _userTransactions,
           deleteTransaction: _deleteTransactions),
     );
+
     return Scaffold(
         appBar: appbar,
         body: SingleChildScrollView(
           child: Column(
             children: [
               if (isLandScop)
-                Row(
-                  children: [
-                    Text("Show Chart"),
-                    Switch(
-                        value: _showChart,
-                        onChanged: (value) {
-                          setState(() {
-                            _showChart = value;
-                          });
-                        })
-                  ],
-                ),
+                ..._buildLandScapeContent(mediaQuery, appbar, txListWidgets),
               if (!isLandScop)
-                Container(
-                  height: (mediaQuery.size.height -
-                          appbar.preferredSize.height -
-                          mediaQuery.padding.top) *
-                      0.3,
-                  child: Cart(recentTransactions: _recentTransactions),
-                ),
-              if (!isLandScop) txListWidgets,
-              if (isLandScop)
-                _showChart
-                    ? Container(
-                        height: (mediaQuery.size.height -
-                                appbar.preferredSize.height -
-                                mediaQuery.padding.top) *
-                            0.7,
-                        child: Cart(recentTransactions: _recentTransactions),
-                      )
-                    : txListWidgets
+                ..._buildPortaitContent(mediaQuery, appbar, txListWidgets),
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showModalBottomSheet(),
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ));
   }
 }

@@ -7,7 +7,7 @@ import 'package:personal_expenses/widgets/chart_bar.dart';
 class Cart extends StatelessWidget {
   final List<Transactions> recentTransactions;
 
-  Cart({required this.recentTransactions});
+  const Cart({required this.recentTransactions});
 
   List<Map<String, dynamic>> get groupedTransactionsValue {
     return List.generate(
@@ -40,6 +40,7 @@ class Cart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   // print('build() in chart class');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

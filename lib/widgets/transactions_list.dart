@@ -3,77 +3,64 @@ import 'package:flutter/material.dart';
 import 'package:personal_expenses/custom_widgets/big_text.dart';
 import 'package:personal_expenses/custom_widgets/small_text.dart';
 import 'package:personal_expenses/models/transactions.dart';
-import 'package:intl/intl.dart';
+
+import 'package:personal_expenses/widgets/transaction_items.dart';
 
 class TransactionsList extends StatelessWidget {
   final List<Transactions> userTransactions;
   final Function deleteTransaction;
 
-  TransactionsList({required this.userTransactions,required this.deleteTransaction});
+  const TransactionsList(
+      {required this.userTransactions, required this.deleteTransaction});
 
   @override
   Widget build(BuildContext context) {
+    //print('build() in transactionList class');
     return Container(
-     // height: 300,
+      // height: 300,
       //height: MediaQuery.of(context).size.height * 0.6,
       child: userTransactions.isEmpty
-          ? LayoutBuilder(builder: (ctx , constrains){
-            return Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "No transaction yet",
-                    style: TextStyle(
-                      fontSize: 18,
+          ? LayoutBuilder(builder: (ctx, constrains) {
+              return Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "No transaction yet",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  height: constrains.maxHeight * 0.6,
-                  child: Image.asset(
-                    "assets/image/waiting.png",
-                    fit: BoxFit.cover,
+                  const SizedBox(
+                    height: 20,
                   ),
-                )
-              ],
-            );
-      })
+                  Container(
+                    height: constrains.maxHeight * 0.6,
+                    child: Image.asset(
+                      "assets/image/waiting.png",
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                ],
+              );
+            })
           : ListView.builder(
               itemCount: userTransactions.length,
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
-                return Card(
-                  elevation: 6,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: FittedBox(
-                          child: Text(
-                              "\$${userTransactions[index].amount.toStringAsFixed(2)}"),
-                        ),
-                      ),
-                    ),
-                    title: BigText(text: userTransactions[index].title),
-                    subtitle: SmallText(
-                      text: DateFormat.yMMMd()
-                          .format(userTransactions[index].dateTime),
-                    ),
-                    trailing: IconButton(icon: Icon(Icons.delete,color: Colors.red,size: 28,), onPressed: () => deleteTransaction(userTransactions[index].id),),
-                  ),
-                );
+                return TransactionsItem(
+                    userTransaction: userTransactions[index],
+                    deleteTransaction: deleteTransaction);
               },
             ),
     );
   }
 }
+
+
 /*
 Row(
               children: [
